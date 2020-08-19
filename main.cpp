@@ -1,29 +1,41 @@
 #include <stdio.h>
-class
+class node_pair_state
 {
-private:
-    /* data */
+public:
+    int node1;
+    int node2;
+    int cost;
+};
+
+class map_state
+{
 public:
     int Npath;
     int Nnode;
-};
-
-class path
-{
-public:
-    int No;
-    int cost;
-    int node1;
-    int node2;
+    node_pair_state nodepair[10];
 };
 
 int main()
 {
+    int i;
+    map_state map;
     FILE *nodePath;
     nodePath = fopen("example_NodePath.txt", "r");
+    fscanf(nodePath, "%d %d", &(map.Npath), &(map.Nnode));
+    node_pair_state cost_table[map.Nnode*map.Nnode];
 
-    // while (fscanf(nodePath, "%s %f %f %f %f %f", str, &f1, &f2, &f3, &f4, &f5) != EOF)
-    // {
-    //     printf("%s %.1f %.1f %.1f %.1f %.1f\n", str, f1, f2, f3, f4, f5);
-    // }
+
+    for (i = 0; i < map.Npath; i++)
+    {
+        fscanf(nodePath, "%d %d %d", &(map.nodepair[i].node1), &(map.nodepair[i].node2), &(map.nodepair[i].cost));
+    }
+    /////マップデータの表示////////
+    printf("--------MAP_DATA-------------\n");
+    printf("%d %d\n", map.Npath, map.Nnode);
+    for (i = 0; i < map.Npath; i++)
+    {
+        printf("%d %d %d\n", map.nodepair[i].node1, map.nodepair[i].node2, map.nodepair[i].cost);
+    }
+
+    return 0;
 }
