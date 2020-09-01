@@ -1,6 +1,9 @@
 #include <stdio.h>
 #define INF 99999
 #define SIZE 1000
+
+int calcCost;
+
 class node_state
 {
 public:
@@ -29,7 +32,7 @@ class map_state
 public:
     int Npath;
     int Nnode;
-    node_pair_state nodepair[10];
+    node_pair_state nodepair[SIZE];
 };
 
 int main()
@@ -39,14 +42,13 @@ int main()
     ////マップの定義///////////
     map_state map;
     FILE *nodePath;
-    nodePath = fopen("example_NodePath.txt", "r");
+    nodePath = fopen("NodePath2-3.txt", "r");
     fscanf(nodePath, "%d %d", &(map.Npath), &(map.Nnode));
-
     for (i = 0; i < map.Npath; i++)
     {
         fscanf(nodePath, "%d %d %d", &(map.nodepair[i].node1), &(map.nodepair[i].node2), &(map.nodepair[i].cost));
     }
-    /////マップデータの表示////////
+    ///マップデータの表示////////
     printf("--------MAP_DATA-------------\n");
     printf("%d %d\n", map.Npath, map.Nnode);
     for (i = 0; i < map.Npath; i++)
@@ -84,18 +86,18 @@ int main()
     //コスト表を更新
     for (i = 0; i < map.Npath; i++)
     {
-        printf("%d %d %d\n", map.nodepair[i].node1, map.nodepair[i].node2, map.nodepair[i].cost);
+        //printf("%d %d %d\n", map.nodepair[i].node1, map.nodepair[i].node2, map.nodepair[i].cost);
         cost_node2node[map.nodepair[i].node1][map.nodepair[i].node2] = map.nodepair[i].cost;
     }
     //スタートとゴールを設定
-    printf("please input the startNodeNo and goalNodeNo\n");
+    printf("---------------user input----------------\n");
     printf("start:");
     scanf("%d,\n", &route.start);
     printf("goal:");
     scanf("%d,\n", &route.goal);
 
     //----------------以下ダイクストラ法のアルゴリズム----------------
-    int min, target;
+    int min, mark;
     int neighbor;
 
     route.to_node_cost[route.start] = 0;
@@ -109,12 +111,12 @@ int main()
             if (!node[i].confirmed && min > route.to_node_cost[i])
             {
                 min = route.to_node_cost[i];
-                target = i;
+                mark = i;
             }
         }
 
         //全ての地点において最短経路が確定される
-        if (target == route.goal)
+        if (mark == route.goal)
         {
             // return route.to_node_cost[route.goal];
             break;
@@ -123,16 +125,21 @@ int main()
         //今確定した場所から直交できる
         for (neighbor = 0; neighbor < map.Nnode; neighbor++)
         {
-            if (route.to_node_cost[neighbor] > cost_node2node[target][neighbor] + route.to_node_cost[target])
+            if (route.to_node_cost[neighbor] > cost_node2node[mark][neighbor] + route.to_node_cost[mark])
             {
-                route.to_node_cost[neighbor] = cost_node2node[target][neighbor] + route.to_node_cost[target];
-                route.via[neighbor] = target;
+                route.to_node_cost[neighbor] = cost_node2node[mark][neighbor] + route.to_node_cost[mark];
+                route.via[neighbor] = mark;
+                calcCost = calcCost + 1;
             }
         }
-        node[target].confirmed = 1;
+        node[mark].confirmed = 1;
     }
+
     //結果表示
-    printf("totalcost:%d\n", route.to_node_cost[route.goal]);
+    printf("---------------result--------------------\n");
+    printf("total cost:%d\n", route.to_node_cost[route.goal]);
+    printf("calculation amount:%d\n", calcCost);
+    printf("route:");
     int Rnode = route.goal;
     printf("%d", Rnode);
     while (1)
@@ -144,6 +151,6 @@ int main()
             break;
         }
     }
-
+    fclose(nodePath);
     return 0;
 }
