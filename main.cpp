@@ -1,6 +1,6 @@
 #include <stdio.h>
-#define INF 99999
-#define SIZE 1000
+#define INFNITY 99999
+#define N 1000
 
 int calcCost;
 
@@ -15,8 +15,8 @@ class route_state
 public:
     int start = 0;          //スタートのノード
     int goal = 4;           //ゴールのノード
-    int to_node_cost[SIZE]; //各ノードまでのコスト
-    int via[SIZE];          //経由するノード
+    int to_node_cost[N]; //各ノードまでのコスト
+    int via[N];          //経由するノード
 };
 
 class node_pair_state
@@ -32,7 +32,7 @@ class map_state
 public:
     int Npath;
     int Nnode;
-    node_pair_state nodepair[SIZE];
+    node_pair_state nodepair[N];
 };
 
 int main()
@@ -69,9 +69,9 @@ int main()
 
     /*各変数の初期化*/
     //ルートの初期化
-    for (i = 0; i < SIZE; i++)
+    for (i = 0; i < N; i++)
     {
-        route.to_node_cost[i] = INF;
+        route.to_node_cost[i] = INFNITY;
         route.via[i] = -1;
     }
 
@@ -80,7 +80,7 @@ int main()
     {
         for (j = 0; j < map.Nnode; j++)
         {
-            cost_node2node[i][j] = INF;
+            cost_node2node[i][j] = INFNITY;
         }
     }
     //コスト表を更新
@@ -105,7 +105,7 @@ int main()
     while (1)
     {
         //未確定ノードより最も距離のコストの小さいものを選んで確定する
-        min = INF;
+        min = INFNITY;
         for (i = 0; i < map.Nnode; i++)
         {
             if (!node[i].confirmed && min > route.to_node_cost[i])
